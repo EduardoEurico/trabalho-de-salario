@@ -13,10 +13,11 @@ class FolhaDePagamento:
     def menu(self):
         while True:
             print(("\nUtilize números para controlar o menu.\n"))
-            print("\n>>>>>>>>>>>>>>>>>>>>  1. Inserir dados       <<<<<<<<<<<<<<<<")
-            print(">>>>>>>>>>>>>>>>>>>>  2. Ler dados           <<<<<<<<<<<<<<<<")
-            print(">>>>>>>>>>>>>>>>>>>>  3. Imprimir relatório  <<<<<<<<<<<<<<<<")
-            print(">>>>>>>>>>>>>>>>>>>>  4. Sair                <<<<<<<<<<<<<<<<\n")
+            print(30*"=","MENU",28*"=")
+            print(">"*19,"  1. Inserir dados       ",">"*16)
+            print(">"*20,"  2. Ler dados           ",">"*16)
+            print(">"*20,"  3. Imprimir relatório  ",">"*16)
+            print(">"*20,"  4. Sair                ",">"*16,"\n")
 
             opcao = int(input("Escolha uma opcão: "))
 
