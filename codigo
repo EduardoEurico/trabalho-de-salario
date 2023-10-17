@@ -1,0 +1,104 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+class FolhaDePagamento:
+    def __init__(self):
+        self.dados = pd.DataFrame(columns=["Nome", "Cargo", "Salário", "Horas Trabalhadas"])
+        self.descontos = []
+        self.descontosT = 0
+        self.salarioB = 0
+        self.salarioL = 0
+
+    def menu(self):
+        while True:
+            print(("\nUtilize números para controlar o menu.\n"))
+            print("\n>>>>>>>>>>>>>>>>>>>>  1. Inserir dados       <<<<<<<<<<<<<<<<")
+            print(">>>>>>>>>>>>>>>>>>>>  2. Ler dados           <<<<<<<<<<<<<<<<")
+            print(">>>>>>>>>>>>>>>>>>>>  3. Imprimir relatório  <<<<<<<<<<<<<<<<")
+            print(">>>>>>>>>>>>>>>>>>>>  4. Sair                <<<<<<<<<<<<<<<<\n")
+
+            opcao = int(input("Escolha uma opcão: "))
+
+            if opcao == 1:
+                self.inserir()
+            elif opcao == 2:
+                self.ler_dadosA()
+            elif opcao == 3:
+                self.calcular_imprimir()
+            elif opcao == 4:
+                print(("Relatorios finalizados."))
+                break
+            else:
+                print("Opção invalida, tente novamente com outra alternativa.")
+
+    def inserir(self):
+
+        nome = input("Funcionário: ")
+        cargo = input("Cargo: ")
+        salario = float(input("Salário: "))
+        horas_T = float(input("Horas Trabalhadas: "))
+
+        self.dados = self.dados._append({"Nome": nome, "Cargo": cargo, "Salário": salario, "HorasTrabalhadas": horas_T},ignore_index=True)
+
+    def gravar_dados(self):
+        self.dados.to_csv("folha_pag.csv", index=False)
+
+    def ler_dadosA(self):
+        try:
+            with open("folha_pagamento.txt", "w",encoding="UTF-8") as arquivo:
+                for indice, linha in self.dados.iterrows():
+                    nome = linha['Nome']
+                    cargo = linha['Cargo']
+                    salario = linha['Salário']
+                    horas_t = linha['HorasTrabalhadas']
+
+                    arquivo.write(f"Funcionário: {nome}\nCargo: {cargo}\nSalário: {salario}\nHoras Trabalhadas: {horas_t} \n\n")
+                print("Dados gravados com sucesso no arquivo 'folha_pagagamento.txt'.")
+        except Exception as e:
+                print(f"Erro ao criar o arquivo: {e}")
+
+    def calcular_descontos(self,salario):
+        if salario <= 1500:
+            return 0
+        elif 1500 < salario <= 3000:
+            return salario * 0.15
+        elif 3000 < salario <= 5000:
+            return salario * 0.20
+        else:
+            return salario * 0.27
+
+    def calcular_imprimir(self):
+        self.descontos = [self.calcular_descontos(salario) for salario in self.dados["Salário"]]
+        self.descontosT = sum(self.descontos)
+        self.salarioB = self.dados["Salário"].sum()
+        self.salarioL = self.salarioB - self.descontosT
+
+        relatorio = pd.DataFrame({
+            "Nome": self.dados["Nome"],
+            "Cargo": self.dados["Cargo"],
+            "Salário": self.dados["Salário"],
+            "HorasTrabalhadas": self.dados["HorasTrabalhadas"],
+            "Descontos IR": self.descontos
+        })
+
+        print("\nRelatório:")
+        print(relatorio)
+
+        print("/nTotal de descontos de IR:{self.descontosT}")
+        print("Total do Salário Bruto: {self.salarioB")
+        print("Total do Salário Liquido: {self.salarioL")
+
+        relatorio.to_csv("relatorio.csv", index=False)
+        self.grafico()
+
+    def grafico(self):
+        plt.bar( self.dados["Nome"], self.descontos, color="green")
+        plt.xlabel("Funcionario")
+        plt.ylabel("Desconto IR")
+        plt.title("Desconto do imposto de renda por funcionario")
+        plt.show()
+
+
+folha_pagamento = FolhaDePagamento()
+folha_pagamento.menu()
